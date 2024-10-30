@@ -7,10 +7,10 @@ const Toast = ({ message, type, onClose }) => {
   }, [onClose]);
 
   const typeStyles = {
-    success: "bg-green-500",
-    error: "bg-red-500",
-    info: "bg-blue-500",
-    warning: "bg-yellow-500",
+    success: "bg-green-600",
+    error: "bg-red-600",
+    info: "bg-blue-600",
+    warning: "bg-yellow-600",
   };
 
   return (

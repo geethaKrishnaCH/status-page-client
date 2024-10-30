@@ -1,18 +1,23 @@
-import { useState } from "react";
-import { addOrganisationApi } from "../api/services/organization";
-import Toast from "./common/Toast";
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import useOrganizationAPI from "../api/services/organization";
+import AxiosContext from "../stores/axios";
 
 const AddOrganisationForm = () => {
   const [organisation, setOrganisation] = useState({
     displayName: "",
     name: "",
   });
+  const navigate = useNavigate();
+  const axiosInstance = useContext(AxiosContext);
+  const { addOrganisationAPI } = useOrganizationAPI(axiosInstance);
 
   const handleSubmit = async () => {
-    const res = await addOrganisationApi(organisation);
-    console.log(res.data);
+    const res = await addOrganisationAPI(organisation);
+    const orgId = res.data.organizationId;
     toast("Created Successfully");
+    navigate(`/organization/${orgId}`);
   };
 
   return (
@@ -70,7 +75,7 @@ const AddOrganisationForm = () => {
 
           <button
             type="button"
-            className="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+            className="w-full bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
             onClick={handleSubmit}
           >
             Submit

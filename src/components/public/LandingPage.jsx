@@ -1,13 +1,11 @@
-import { useAuth0 } from "@auth0/auth0-react";
 import AddOrganisationButton from "./AddOrganizationButton";
 import AllOrganizationView from "./AllOrganiZationView";
 import SearchOrganization from "./SearchOrganization";
 
 const LandingPage = () => {
-  const { loginWithRedirect, isAuthenticated, isLoading } = useAuth0();
   return (
-    <div>
-      <div className="px-8 flex justify-center gap-4">
+    <div className="absolute top-0 left-0 right-0 bottom-0">
+      <div className="px-8 py-2 flex justify-center gap-4">
         <SearchOrganization />
         <AddOrganisationButton />
       </div>

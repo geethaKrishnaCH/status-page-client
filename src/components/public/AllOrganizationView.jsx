@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
-import { fetchOrganizations } from "../../api/services/organization";
+import { useContext, useEffect, useState } from "react";
+import useOrganizationAPI from "../../api/services/organization";
+import AxiosContext from "../../stores/axios";
 import OrganizationCard from "./OrganizationCard";
 
 const AllOrganizationView = ({ searchQuery }) => {
   const [organizations, setOrganizations] = useState([]);
+  const axiosInstance = useContext(AxiosContext);
+  const { fetchOrganizationsAPI } = useOrganizationAPI(axiosInstance);
   const getOrganizations = async () => {
-    const res = await fetchOrganizations(searchQuery);
+    const res = await fetchOrganizationsAPI(searchQuery);
     setOrganizations(res.data);
   };
   useEffect(() => {
@@ -19,7 +22,7 @@ const AllOrganizationView = ({ searchQuery }) => {
       {organizations && organizations.length > 0 && (
         <div className="w-1/2">
           {organizations.map((org) => (
-            <OrganizationCard organization={org} />
+            <OrganizationCard key={org.organizationId} organization={org} />
           ))}
         </div>
       )}

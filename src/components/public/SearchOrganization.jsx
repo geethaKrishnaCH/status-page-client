@@ -13,7 +13,7 @@ const SearchOrganization = () => {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Search Organization..."
-        className="flex-1 ml-2 p-3 outline-none bg-transparent"
+        className="flex-1 ml-2 px-3 py-2 outline-none bg-transparent"
       />
       <FaSearch className="text-gray-500 mr-3 cursor-pointer" />
     </div>

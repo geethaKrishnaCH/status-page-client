@@ -14,9 +14,15 @@ const instance = axios.create({
 export const setupAxiosInterceptors = (getToken) => {
   instance.interceptors.request.use(
     async (config) => {
-      const token = await getToken();
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+      try {
+        const token = await getToken();
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+      } catch (err) {
+        console.warn(
+          "Failed to retrieve token, continuing without Authorization header."
+        );
       }
       return config;
     },
