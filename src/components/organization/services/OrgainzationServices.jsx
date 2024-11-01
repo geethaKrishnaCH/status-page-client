@@ -1,75 +1,112 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa"; // Importing icons
 import AddServiceForm from "./AddServiceForm";
+import useAxios from "../../../stores/axios";
+import useOrganizationAPI from "../../../services/organization";
+import useUIConfig from "../../../utils/constants";
+import useAccessContext from "../../../stores/access-control";
+import Modal from "../../common/Modal";
+import UpdateServiceForm from "./UpdateServiceForm";
+import MaintenanceList from "../incidents/MaintenanceList";
 
-// Sample service data
-const initialServices = [
-  { id: 1, name: "Service A", status: "Operational", availability: 99.9 },
-  { id: 2, name: "Service B", status: "Maintenance", availability: 98.5 },
-  { id: 3, name: "Service C", status: "Degraded", availability: 95.2 },
-  { id: 4, name: "Service D", status: "Outage", availability: 92.3 },
-  { id: 5, name: "Service E", status: "Operational", availability: 99.7 },
-];
+function OrganizationServices() {
+  const [services, setServices] = useState([]);
+  const { orgInfo } = useAccessContext();
+  const axiosInstance = useAxios();
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const { fetchOrganizationServices } = useOrganizationAPI(axiosInstance);
+  const { SERVICE_STATUS_LIST } = useUIConfig();
 
-function Services() {
-  const [services, setServices] = useState(initialServices);
+  const getOrganizationServices = async () => {
+    const res = await fetchOrganizationServices(orgInfo.organizationId);
+    const tempData = res.data;
 
-  const handleStatusUpdate = (id) => {
-    const updatedStatus = prompt("Enter new status for the service:");
-    setServices((prevServices) =>
-      prevServices.map((service) =>
-        service.id === id
-          ? { ...service, status: updatedStatus || service.status }
-          : service
-      )
+    setServices(
+      tempData.map((service) => {
+        const { label, classes } = SERVICE_STATUS_LIST.find(
+          (s) => s.code === service.status
+        );
+        return { ...service, statusLabel: label, classes: classes.join(" ") };
+      })
     );
   };
 
-  return (
-    <div className="px-8 py-4 max-w-2xl mx-auto">
-      <div className="flex justify-between items-center mb-3">
-        <h2 className="text-2xl font-semibold">Service Status</h2>
-        <AddServiceForm />
-      </div>
-      <div className="space-y-4">
-        {services.map((service) => (
-          <div
-            key={service.id}
-            className="flex items-center justify-between p-4 border rounded-lg shadow-sm bg-white"
-          >
-            <div>
-              <h3 className="text-lg font-medium">{service.name}</h3>
-              <p className="text-sm text-gray-600">
-                Availability: {service.availability}%
-              </p>
-            </div>
+  useEffect(() => {
+    if (orgInfo.organizationId) {
+      getOrganizationServices();
+    }
+  }, [orgInfo.organizationId]);
 
-            <div className="flex items-center gap-2">
-              <span
-                className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                  service.status === "Operational"
-                    ? "bg-green-100 text-green-600"
-                    : service.status === "Maintenance"
-                    ? "bg-yellow-100 text-yellow-600"
-                    : service.status === "Degraded"
-                    ? "bg-orange-100 text-orange-600"
-                    : "bg-red-100 text-red-600"
-                }`}
-              >
-                {service.status}
-              </span>
-              <button
-                onClick={() => handleStatusUpdate(service.id)}
-                className="ml-2 text-gray-600 hover:text-blue-500"
-              >
-                <FaEdit />
-              </button>
-            </div>
+  return (
+    <div className="px-6 py-4 mx-auto">
+      <div className="flex gap-3">
+        <div className="w-3/5 bg-white rounded-lg shadow-lg p-4">
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="text-2xl font-semibold">Services</h2>
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+              onClick={() => setIsAddModalOpen(true)}
+            >
+              Add
+            </button>
+            <Modal
+              isOpen={isAddModalOpen}
+              onClose={() => setIsAddModalOpen(false)}
+              title={"Add Service"}
+            >
+              <AddServiceForm onClose={setIsAddModalOpen} />
+            </Modal>
           </div>
-        ))}
+          <div className="space-y-4">
+            {(!services || services.length === 0) && (
+              <h2 className="py-4 text-2xl text-center font-semibold">
+                No Services
+              </h2>
+            )}
+            {services.map((service) => (
+              <div
+                key={service.serviceId}
+                className="flex items-center justify-between p-4 border rounded-lg shadow-sm bg-white"
+              >
+                <div>
+                  <h3 className="text-lg font-medium">{service.name}</h3>
+                  <p className="text-sm text-gray-600">{service.description}</p>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-semibold ${service.classes}`}
+                  >
+                    {service.statusLabel}
+                  </span>
+                  <button
+                    onClick={() => setIsUpdateModalOpen(true)}
+                    className="ml-2 text-gray-600 hover:text-blue-500"
+                  >
+                    <FaEdit />
+                  </button>
+                  <Modal
+                    isOpen={isUpdateModalOpen}
+                    onClose={() => setIsUpdateModalOpen(false)}
+                    title={"Update Service"}
+                  >
+                    <UpdateServiceForm
+                      service={service}
+                      onClose={setIsUpdateModalOpen}
+                    />
+                  </Modal>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="w-2/5">
+          <MaintenanceList />
+        </div>
       </div>
     </div>
   );
 }
 
-export default Services;
+export default OrganizationServices;

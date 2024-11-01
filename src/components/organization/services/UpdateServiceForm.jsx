@@ -4,14 +4,18 @@ import useServicesAPI from "../../../services/service";
 import useAxios from "../../../stores/axios";
 import useUIConfig from "../../../utils/constants";
 
-function AddServiceForm({ onClose }) {
+function UpdateServiceForm({ service, onClose }) {
+  console.log(service);
+
   const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    category: "",
-    url: "",
-    currentStatus: "",
+    name: service.name,
+    description: service.description,
+    category: service.category,
+    url: service.url,
+    currentStatus: service.status,
   });
+  console.log(formData);
+
   const { SERVICE_STATUS_LIST, SERVICE_CATEGORY_LIST } = useUIConfig();
   const axiosInstance = useAxios();
   const { addService } = useServicesAPI(axiosInstance);
@@ -88,11 +92,9 @@ function AddServiceForm({ onClose }) {
           Service URL (Optional)
         </label>
         <input
-          type="url"
           name="url"
           value={formData.url}
           onChange={handleChange}
-          // required
           className="mt-1 p-2 border border-gray-300 rounded-md w-full"
         />
       </div>
@@ -117,14 +119,23 @@ function AddServiceForm({ onClose }) {
         </select>
       </div>
 
-      <button
-        type="submit"
-        className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
-      >
-        Add Service
-      </button>
+      <div className="flex gap-3">
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+        >
+          Update Service
+        </button>
+
+        <button
+          type="submit"
+          className="w-full bg-red-500 text-white p-2 rounded-md hover:bg-red-600"
+        >
+          Delete
+        </button>
+      </div>
     </form>
   );
 }
 
-export default AddServiceForm;
+export default UpdateServiceForm;

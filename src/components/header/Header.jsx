@@ -19,7 +19,7 @@ const Header = () => {
             </h2>
           </Link>
         </div>
-        <div className="lg:flex lg:items-center lg:space-x-4">
+        <div className="flex lg:items-center lg:space-x-4 space-x-3">
           <Notification />
           {!isAuthenticated && (
             <button
@@ -31,7 +31,7 @@ const Header = () => {
           )}
 
           {isAuthenticated && (
-            <ProfileHeader userName={"Geetha Krishan"} onLogout={logout} />
+            <ProfileHeader userName={"Geetha Krishna"} onLogout={logout} />
           )}
         </div>
       </nav>

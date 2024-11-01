@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 // Sample maintenance data
 const maintenanceEvents = [
@@ -20,7 +20,18 @@ const maintenanceEvents = [
   },
 ];
 
-function ActiveMaintenanceEvents() {
+const ActiveMaintenanceEvents = () => {
+  const [events, setEvents] = useState([]);
+
+  if (!events || events.length === 0) {
+    // return (
+    //   <div className="p-4 bg-white rounded-lg shadow-md">
+    //     <h2 className="text-2xl text-center font-semibold">No Incidents</h2>
+    //   </div>
+    // );
+    return null;
+  }
+
   return (
     <div className="p-4 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-semibold mb-4">Active Maintenance Events</h2>
@@ -47,6 +58,6 @@ function ActiveMaintenanceEvents() {
       )}
     </div>
   );
-}
+};
 
 export default ActiveMaintenanceEvents;

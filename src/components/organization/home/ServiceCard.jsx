@@ -37,7 +37,7 @@ const ServiceCard = ({ service }) => {
         <h3 className="text-sm font-semibold">{name}</h3>
       </div>
 
-      <div className="flex gap-2 items-center">
+      <div className="flex gap-3 items-center">
         {icon}
         <p className="text-sm">{status}</p>
       </div>

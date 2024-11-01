@@ -1,8 +1,8 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import useOrganizationAPI from "../api/services/organization";
-import AxiosContext from "../stores/axios";
+import useOrganizationAPI from "../services/organization";
+import useAxios from "../stores/axios";
 
 const AddOrganisationForm = () => {
   const [organisation, setOrganisation] = useState({
@@ -10,7 +10,7 @@ const AddOrganisationForm = () => {
     name: "",
   });
   const navigate = useNavigate();
-  const axiosInstance = useContext(AxiosContext);
+  const axiosInstance = useAxios();
   const { addOrganisationAPI } = useOrganizationAPI(axiosInstance);
 
   const handleSubmit = async () => {

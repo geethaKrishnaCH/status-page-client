@@ -3,8 +3,9 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
-import UserContextProvider from "./stores/user.jsx";
+import { AccessControlProvider } from "./stores/access-control.jsx";
 import { AxiosProvider } from "./stores/axios.jsx";
+import { LoaderProvider } from "./stores/loader.jsx";
 
 const domain = import.meta.env.VITE_AUTH0_DOMAIN;
 const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
@@ -21,11 +22,13 @@ createRoot(document.getElementById("root")).render(
         redirect_uri: window.location.origin,
       }}
     >
-      <AxiosProvider>
-        <UserContextProvider>
-          <App />
-        </UserContextProvider>
-      </AxiosProvider>
+      <LoaderProvider>
+        <AxiosProvider>
+          <AccessControlProvider>
+            <App />
+          </AccessControlProvider>
+        </AxiosProvider>
+      </LoaderProvider>
     </Auth0Provider>
   </StrictMode>
 );

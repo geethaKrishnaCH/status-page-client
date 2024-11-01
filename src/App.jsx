@@ -2,11 +2,12 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "react-toastify/ReactToastify.min.css";
 import AddOrganisationForm from "./components/AddOrganizationForm";
 import Home from "./components/Home";
-import Services from "./components/organization/services/OrgainzationServices";
-import OrganizationView from "./components/organization/OrganizationView";
 import OrganizationHome from "./components/organization/home/OrganizationHome";
+import IncidentMaintenancePage from "./components/organization/incidents/IncidentPage";
+import OrganizationServices from "./components/organization/services/OrgainzationServices";
+import TeamsPage from "./components/organization/teams/TeamsPage";
 import LandingPage from "./components/public/LandingPage";
-import TeamManagement from "./components/organization/teams/TeamManagement";
+import OrganizationLayout from "./components/organization/layout/OrganizationLayout";
 function App() {
   const router = createBrowserRouter([
     {
@@ -17,12 +18,12 @@ function App() {
         { path: "add-organization", element: <AddOrganisationForm /> },
         {
           path: "organization/:organizationId",
-          element: <OrganizationView />,
+          element: <OrganizationLayout />,
           children: [
             { path: "", element: <OrganizationHome /> },
-            { path: "services", element: <Services /> },
-            { path: "incidents", element: <Services /> },
-            { path: "team", element: <TeamManagement /> },
+            { path: "services", element: <OrganizationServices /> },
+            { path: "incidents", element: <IncidentMaintenancePage /> },
+            { path: "team", element: <TeamsPage /> },
           ],
         },
       ],

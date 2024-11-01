@@ -3,10 +3,9 @@ import { BiHome } from "react-icons/bi";
 import { BsActivity } from "react-icons/bs";
 import { FcServices } from "react-icons/fc";
 import { GiTeamIdea } from "react-icons/gi";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
-  const location = useLocation();
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState("");
 

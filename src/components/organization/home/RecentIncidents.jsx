@@ -1,10 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
+
+const initialIncidents = [
+  { id: 1, title: "Outage in Service A", date: "2023-10-29" },
+  { id: 2, title: "Degraded Performance in Service B", date: "2023-10-30" },
+];
 
 function RecentIncidents() {
-  const incidents = [
-    { id: 1, title: "Outage in Service A", date: "2023-10-29" },
-    { id: 2, title: "Degraded Performance in Service B", date: "2023-10-30" },
-  ];
+  const [incidents, setIncidents] = useState([]);
+
+  if (!incidents || incidents.length === 0) {
+    // return (
+    //   <div className="p-4 bg-white rounded-lg shadow-md">
+    //     <h2 className="text-2xl text-center font-semibold">No Incidents</h2>
+    //   </div>
+    // );
+    return null;
+  }
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-md">

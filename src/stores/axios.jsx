@@ -1,6 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
-import { createContext } from "react";
+import { createContext, useContext } from "react";
+import { useLoader } from "./loader";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -8,6 +9,7 @@ const AxiosContext = createContext();
 
 export const AxiosProvider = ({ children }) => {
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const { hideLoader, showLoader } = useLoader();
 
   const axiosInstance = axios.create({
     baseURL: API_BASE_URL,
@@ -19,6 +21,7 @@ export const AxiosProvider = ({ children }) => {
 
   axiosInstance.interceptors.request.use(
     async (config) => {
+      showLoader();
       try {
         if (isAuthenticated) {
           const token = await getAccessTokenSilently();
@@ -27,6 +30,7 @@ export const AxiosProvider = ({ children }) => {
           }
         }
       } catch (err) {
+        hideLoader();
         console.warn(
           "Failed to retrieve token, continuing without Authorization header.",
           err
@@ -38,6 +42,17 @@ export const AxiosProvider = ({ children }) => {
       return Promise.reject(error);
     }
   );
+
+  axiosInstance.interceptors.response.use(
+    (response) => {
+      hideLoader(); // Hide loader after response is received
+      return response;
+    },
+    (error) => {
+      hideLoader(); // Hide loader on response error
+      return Promise.reject(error);
+    }
+  );
   return (
     <AxiosContext.Provider value={axiosInstance}>
       {children}
@@ -45,4 +60,7 @@ export const AxiosProvider = ({ children }) => {
   );
 };
 
-export default AxiosContext;
+const useAxios = () => {
+  return useContext(AxiosContext);
+};
+export default useAxios;

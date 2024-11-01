@@ -1,11 +1,11 @@
-import { useContext, useEffect, useState } from "react";
-import useOrganizationAPI from "../../api/services/organization";
-import AxiosContext from "../../stores/axios";
+import { useEffect, useState } from "react";
+import useOrganizationAPI from "../../services/organization";
+import useAxios from "../../stores/axios";
 import OrganizationCard from "./OrganizationCard";
 
 const AllOrganizationView = ({ searchQuery }) => {
   const [organizations, setOrganizations] = useState([]);
-  const axiosInstance = useContext(AxiosContext);
+  const axiosInstance = useAxios();
   const { fetchOrganizationsAPI } = useOrganizationAPI(axiosInstance);
   const getOrganizations = async () => {
     const res = await fetchOrganizationsAPI(searchQuery);
