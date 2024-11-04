@@ -8,7 +8,7 @@ const LoaderContext = createContext({
 
 export const LoaderProvider = ({ children }) => {
   const [count, setCount] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const showLoader = () => {
     setCount((prev) => prev + 1);

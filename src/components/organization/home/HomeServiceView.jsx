@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from "react";
-import useOrganizationAPI from "../../../services/organization";
-import useAccessContext from "../../../stores/access-control";
+import { useParams } from "react-router-dom";
 import useAxios from "../../../stores/axios";
 import useUIConfig from "../../../utils/constants";
+import useOrganizationAPI from "../../../utils/services/organization";
 
 function HomeServiceView() {
   const [services, setServices] = useState([]);
-  const { orgInfo } = useAccessContext();
+  const { organizationId } = useParams();
   const axiosInstance = useAxios();
   const { fetchOrganizationServicesForPublicView } =
     useOrganizationAPI(axiosInstance);
   const { SERVICE_STATUS_LIST } = useUIConfig();
 
   const getOrganizationServices = async () => {
-    if (orgInfo.organizationId) {
-      const res = await fetchOrganizationServicesForPublicView(
-        orgInfo.organizationId
-      );
+    if (organizationId) {
+      const res = await fetchOrganizationServicesForPublicView(organizationId);
       const tempData = res.data;
 
       setServices(
@@ -31,27 +29,25 @@ function HomeServiceView() {
   };
 
   useEffect(() => {
-    getOrganizationServices();
-  }, [orgInfo.organizationId]);
-
-  if (!services || services.length === 0) {
-    // return (
-    //   <div className="p-4 bg-white rounded-lg shadow-md">
-    //     <h2 className="text-2xl text-center font-semibold">No Services</h2>
-    //   </div>
-    // );
-    return null;
-  }
+    if (organizationId) {
+      getOrganizationServices();
+    }
+  }, []);
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-md">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-semibold">Service Status</h2>
-      </div>
+      <h2 className="text-lg font-semibold text-slate-800 mb-2">Services</h2>
+      {!services ||
+        (services.length === 0 && (
+          <h2 className="text-sm mt-4 text-center font-normal italic">
+            No Services
+          </h2>
+        ))}
+
       <div className="space-y-4">
         {services.map((service) => (
           <div
-            key={service.id}
+            key={service.serviceId}
             className="flex items-center justify-between p-4 border rounded-lg bg-gray-50"
           >
             <div>

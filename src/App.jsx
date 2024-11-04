@@ -8,6 +8,8 @@ import OrganizationServices from "./components/organization/services/Orgainzatio
 import TeamsPage from "./components/organization/teams/TeamsPage";
 import LandingPage from "./components/public/LandingPage";
 import OrganizationLayout from "./components/organization/layout/OrganizationLayout";
+import InvitationHandler from "./components/organization/teams/InvitationHandler";
+import ProtectedRoute from "./components/common/ProtectedRoute";
 function App() {
   const router = createBrowserRouter([
     {
@@ -15,16 +17,48 @@ function App() {
       element: <Home />,
       children: [
         { path: "", element: <LandingPage />, children: [] },
-        { path: "add-organization", element: <AddOrganisationForm /> },
+        {
+          path: "add-organization",
+          element: (
+            <ProtectedRoute>
+              <AddOrganisationForm />
+            </ProtectedRoute>
+          ),
+        },
         {
           path: "organization/:organizationId",
           element: <OrganizationLayout />,
           children: [
             { path: "", element: <OrganizationHome /> },
-            { path: "services", element: <OrganizationServices /> },
-            { path: "incidents", element: <IncidentMaintenancePage /> },
-            { path: "team", element: <TeamsPage /> },
+            {
+              path: "services",
+              element: (
+                <ProtectedRoute>
+                  <OrganizationServices />
+                </ProtectedRoute>
+              ),
+            },
+            {
+              path: "incidents",
+              element: (
+                <ProtectedRoute>
+                  <IncidentMaintenancePage />
+                </ProtectedRoute>
+              ),
+            },
+            {
+              path: "teams",
+              element: (
+                <ProtectedRoute>
+                  <TeamsPage />
+                </ProtectedRoute>
+              ),
+            },
           ],
+        },
+        {
+          path: "organization/invitations",
+          element: <InvitationHandler />,
         },
       ],
     },

@@ -21,7 +21,7 @@ const maintenanceEvents = [
 ];
 
 const ActiveMaintenanceEvents = () => {
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState(maintenanceEvents);
 
   if (!events || events.length === 0) {
     // return (

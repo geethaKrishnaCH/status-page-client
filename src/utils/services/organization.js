@@ -34,12 +34,28 @@ const useOrganizationAPI = (axios) => {
     });
   };
 
+  const fetchOrganizationIncidents = (organizationId) => {
+    return axios({
+      url: `organizations/${organizationId}/incidents`,
+      method: "GET",
+    });
+  };
+
+  const fetchOrganizationIncidentsForPublicView = (organizationId) => {
+    return axios({
+      url: `public/organizations/${organizationId}/incidents`,
+      method: "GET",
+    });
+  };
+
   return {
     addOrganisationAPI,
     fetchOrganizationsAPI,
     fetchOrganizationInfo,
     fetchOrganizationServices,
     fetchOrganizationServicesForPublicView,
+    fetchOrganizationIncidents,
+    fetchOrganizationIncidentsForPublicView,
   };
 };
 

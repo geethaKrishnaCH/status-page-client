@@ -3,8 +3,10 @@ import { SiInstatus } from "react-icons/si";
 import { Link } from "react-router-dom";
 import Notification from "./Notification";
 import ProfileHeader from "./ProfileHeader";
+import useAccessContext from "../../stores/access-control";
 const Header = () => {
   const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+  const { userInfo } = useAccessContext();
   return (
     <header className="bg-white">
       <nav className="relative flex items-center justify-between bg-white lg:rounded-md lg:shadow-sm lg:px-8 lg:py-2 md:px-4 md:py-2 sm:py-2 sm:px-4">
@@ -31,7 +33,7 @@ const Header = () => {
           )}
 
           {isAuthenticated && (
-            <ProfileHeader userName={"Geetha Krishna"} onLogout={logout} />
+            <ProfileHeader userName={userInfo.name} onLogout={logout} />
           )}
         </div>
       </nav>

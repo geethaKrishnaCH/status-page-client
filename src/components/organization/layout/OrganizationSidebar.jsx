@@ -14,7 +14,7 @@ const Sidebar = () => {
     { path: "", label: "Home", icon: <BiHome /> },
     { path: "services", label: "Services", icon: <FcServices /> },
     { path: "incidents", label: "Incidents", icon: <BsActivity /> },
-    { path: "team", label: "Team members", icon: <GiTeamIdea /> },
+    { path: "teams", label: "Team members", icon: <GiTeamIdea /> },
   ];
 
   const handleSidebarSelection = (selectedOption) => {
@@ -23,7 +23,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="h-full w-64 bg-gray-50 flex flex-col p-4 overflow-y-auto">
+    <div className="p-4">
       <ul className="flex flex-col space-y-1">
         {links.map(({ path, label, icon }) => (
           <li

@@ -35,15 +35,11 @@ const OrganizationHome = () => {
 
       <div className="container mx-auto">
         <div className="flex gap-3">
-          <div className="w-3/5">
+          <div className="w-1/2">
             <HomeServiceView />
           </div>
-
-          <div className="w-2/5">
+          <div className="w-1/2">
             <RecentIncidents />
-            <div className="mt-2">
-              <ActiveMaintenanceEvents />
-            </div>
           </div>
         </div>
       </div>

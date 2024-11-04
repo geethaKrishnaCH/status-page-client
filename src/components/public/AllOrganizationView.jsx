@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import useOrganizationAPI from "../../services/organization";
+import useOrganizationAPI from "../../utils/services/organization";
 import useAxios from "../../stores/axios";
 import OrganizationCard from "./OrganizationCard";
 

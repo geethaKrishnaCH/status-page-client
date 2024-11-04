@@ -1,21 +1,18 @@
 import { useState } from "react";
+import useAxios from "../../../stores/axios";
+import useUsersAPI from "../../../utils/services/user";
+import { toast } from "react-toastify";
 
 const InviteMembers = () => {
-  const [inviteEmail, setInviteEmail] = useState("");
-
+  const [email, setEmail] = useState("");
+  const axiosInstance = useAxios();
+  const { inviteUser } = useUsersAPI(axiosInstance);
   // Handle inviting new team members
-  const handleInvite = () => {
-    if (inviteEmail) {
-      setTeam((prevTeam) => [
-        ...prevTeam,
-        {
-          id: team.length + 1,
-          name: inviteEmail,
-          email: inviteEmail,
-          role: "Member",
-        },
-      ]);
-      setInviteEmail("");
+  const handleInvite = async () => {
+    if (email.trim()) {
+      await inviteUser(email);
+      toast.success("Invitation sent!");
+      setEmail("");
     }
   };
   return (
@@ -25,8 +22,8 @@ const InviteMembers = () => {
         <div className="flex flex-col gap-3">
           <input
             type="email"
-            value={inviteEmail}
-            onChange={(e) => setInviteEmail(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter email address"
             className="p-2 border rounded-lg"
           />

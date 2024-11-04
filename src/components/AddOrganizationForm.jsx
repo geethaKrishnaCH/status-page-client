@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import useOrganizationAPI from "../services/organization";
+import useOrganizationAPI from "../utils/services/organization";
 import useAxios from "../stores/axios";
 
 const AddOrganisationForm = () => {
@@ -16,7 +16,7 @@ const AddOrganisationForm = () => {
   const handleSubmit = async () => {
     const res = await addOrganisationAPI(organisation);
     const orgId = res.data.organizationId;
-    toast("Created Successfully");
+    toast.success("Created Successfully");
     navigate(`/organization/${orgId}`);
   };
 

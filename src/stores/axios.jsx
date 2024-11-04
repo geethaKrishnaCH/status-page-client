@@ -15,10 +15,10 @@ export const AxiosProvider = ({ children }) => {
     baseURL: API_BASE_URL,
     headers: {
       "Content-Type": "application/json",
-      timeout: 100000,
+      timeout: 10000,
     },
   });
-
+  // Add request interceptor
   axiosInstance.interceptors.request.use(
     async (config) => {
       showLoader();
@@ -29,30 +29,35 @@ export const AxiosProvider = ({ children }) => {
             config.headers.Authorization = `Bearer ${token}`;
           }
         }
+        const organizationId = localStorage.getItem("organizationId");
+        config.headers["X-Organization-Id"] = organizationId;
       } catch (err) {
-        hideLoader();
         console.warn(
           "Failed to retrieve token, continuing without Authorization header.",
           err
         );
+        hideLoader();
       }
       return config;
     },
     (error) => {
+      hideLoader();
       return Promise.reject(error);
     }
   );
 
+  // Add response interceptor
   axiosInstance.interceptors.response.use(
     (response) => {
-      hideLoader(); // Hide loader after response is received
+      hideLoader();
       return response;
     },
     (error) => {
-      hideLoader(); // Hide loader on response error
+      hideLoader();
       return Promise.reject(error);
     }
   );
+
   return (
     <AxiosContext.Provider value={axiosInstance}>
       {children}

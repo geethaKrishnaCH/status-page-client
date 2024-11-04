@@ -1,10 +1,7 @@
 import React, { useState } from "react";
-import { toast } from "react-toastify";
-import useServicesAPI from "../../../services/service";
-import useAxios from "../../../stores/axios";
 import useUIConfig from "../../../utils/constants";
 
-function AddServiceForm({ onClose }) {
+function AddServiceForm({ onSubmit }) {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -13,8 +10,6 @@ function AddServiceForm({ onClose }) {
     currentStatus: "",
   });
   const { SERVICE_STATUS_LIST, SERVICE_CATEGORY_LIST } = useUIConfig();
-  const axiosInstance = useAxios();
-  const { addService } = useServicesAPI(axiosInstance);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,9 +18,7 @@ function AddServiceForm({ onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await addService(formData);
-    onClose(false);
-    toast("Service Created");
+    onSubmit(formData);
   };
 
   const trimInput = (e) => {
@@ -117,12 +110,14 @@ function AddServiceForm({ onClose }) {
         </select>
       </div>
 
-      <button
-        type="submit"
-        className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
-      >
-        Add Service
-      </button>
+      <div className="flex justify-center">
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600"
+        >
+          Add Service
+        </button>
+      </div>
     </form>
   );
 }

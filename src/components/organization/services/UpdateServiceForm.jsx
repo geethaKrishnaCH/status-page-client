@@ -1,20 +1,17 @@
 import React, { useState } from "react";
-import { toast } from "react-toastify";
-import useServicesAPI from "../../../services/service";
+import useServicesAPI from "../../../utils/services/service";
 import useAxios from "../../../stores/axios";
 import useUIConfig from "../../../utils/constants";
 
-function UpdateServiceForm({ service, onClose }) {
-  console.log(service);
-
+function UpdateServiceForm({ service, onSubmit }) {
   const [formData, setFormData] = useState({
+    serviceId: service.serviceId,
     name: service.name,
     description: service.description,
     category: service.category,
     url: service.url,
     currentStatus: service.status,
   });
-  console.log(formData);
 
   const { SERVICE_STATUS_LIST, SERVICE_CATEGORY_LIST } = useUIConfig();
   const axiosInstance = useAxios();
@@ -27,9 +24,7 @@ function UpdateServiceForm({ service, onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await addService(formData);
-    onClose(false);
-    toast("Service Created");
+    onSubmit(formData);
   };
 
   const trimInput = (e) => {
@@ -119,17 +114,17 @@ function UpdateServiceForm({ service, onClose }) {
         </select>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex justify-center gap-3">
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+          className="px-6 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
         >
-          Update Service
+          Update
         </button>
 
         <button
           type="submit"
-          className="w-full bg-red-500 text-white p-2 rounded-md hover:bg-red-600"
+          className="px-6 bg-red-500 text-white py-2 rounded-md hover:bg-red-600"
         >
           Delete
         </button>

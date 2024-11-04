@@ -7,7 +7,15 @@ const useServicesAPI = (axios) => {
     });
   };
 
-  return { addService };
+  const updateService = (serviceData) => {
+    return axios({
+      url: `services`,
+      method: "PUT",
+      data: serviceData,
+    });
+  };
+
+  return { addService, updateService };
 };
 
 export default useServicesAPI;

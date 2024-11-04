@@ -1,71 +1,74 @@
 import React, { useEffect, useState } from "react";
 import useAccessContext from "../../../stores/access-control";
 import useUIConfig from "../../../utils/constants";
-import useAxios from "../../../stores/axios";
-import useIncidentsAPI from "../../../services/incident";
 
-function IncidentForm({ mode = "create", incident = null }) {
-  const [incidentName, setIncidentName] = useState(incident?.name || "");
-  const [incidentStatus, setIncidentStatus] = useState(incident?.status || "");
-  const [serviceStatus, setServiceStatus] = useState("");
-  const [message, setMessage] = useState(incident?.message || "");
-  const [selectedServices, setSelectedServices] = useState(
-    incident?.services || []
-  );
+function IncidentForm({ mode = "create", incident = null, onSubmit }) {
+  const [incidentData, setIncidentData] = useState({
+    id: incident?.id,
+    title: incident?.name || "",
+    description: incident?.description || "",
+    status: incident?.status || "",
+    serviceStatus: incident?.serviceStatus || "",
+    message: incident?.lastMessage || "",
+    selectedServices: incident?.services.map((ser) => ser.id) || [],
+  });
+
   const { services } = useAccessContext();
   const { SERVICE_STATUS_LIST, INCIDENT_STATUS_LIST } = useUIConfig();
-  const axiosInstance = useAxios();
-  const { addIncident } = useIncidentsAPI(axiosInstance);
 
   // For selecting or unselecting a service
-  const handleServiceSelection = (service) => {
-    if (mode === "update") return; // Disable service selection in update mode if needed
-    setSelectedServices((prevSelected) =>
-      prevSelected.includes(service)
-        ? prevSelected.filter((s) => s !== service)
-        : [...prevSelected, service]
-    );
+  const handleServiceSelection = (serviceId) => {
+    if (mode === "update") return; // Disable serviceId selection in update mode if needed
+    const prevSelected = incidentData.selectedServices;
+    const selectedServices = prevSelected.includes(serviceId)
+      ? prevSelected.filter((s) => s !== serviceId)
+      : [...prevSelected, serviceId];
+    setIncidentData((prev) => ({ ...prev, selectedServices }));
   };
 
   useEffect(() => {
-    if (selectedServices.length === 0) {
-      setServiceStatus("");
+    if (incidentData.selectedServices.length === 0) {
+      setIncidentData((prev) => ({ ...prev, serviceStatus: "" }));
     }
-  }, [selectedServices]);
+  }, [incidentData.selectedServices]);
 
   const handleSubmit = async () => {
-    const payload = {
-      incidentName,
-      incidentStatus,
-      message,
-      services: selectedServices,
-      serviceStatus,
-    };
-
-    if (mode === "create") {
-      await addIncident(payload);
-      console.log("Creating Incident:", payload);
-      // API call for creating the incident
-    } else if (mode === "update") {
-      console.log("Updating Incident:", payload);
-      // API call for updating the incident
-    }
+    onSubmit(incidentData);
   };
 
   return (
     <div>
-      {/* Incident Name Field */}
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Incident name
         </label>
         <input
           type="text"
-          value={incidentName}
-          onChange={(e) => setIncidentName(e.target.value)}
+          value={incidentData.title}
+          onChange={(e) =>
+            setIncidentData((prev) => ({ ...prev, title: e.target.value }))
+          }
           placeholder="Errors in the admin portal"
           className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           disabled={mode === "update"} // Disable if in update mode
+        />
+      </div>
+
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Description
+        </label>
+        <textarea
+          value={incidentData.description}
+          onChange={(e) =>
+            setIncidentData((prev) => ({
+              ...prev,
+              description: e.target.value,
+            }))
+          }
+          placeholder="Describe the incident"
+          className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          rows="4"
         />
       </div>
 
@@ -78,9 +81,11 @@ function IncidentForm({ mode = "create", incident = null }) {
           {INCIDENT_STATUS_LIST.map((option) => (
             <button
               key={option.code}
-              onClick={() => setIncidentStatus(option.code)}
+              onClick={() =>
+                setIncidentData((prev) => ({ ...prev, status: option.code }))
+              }
               className={`flex-1 py-2 text-center border-r ${
-                incidentStatus === option.code
+                incidentData.status === option.code
                   ? "bg-blue-100 text-blue-600"
                   : "bg-gray-100 text-gray-600"
               }`}
@@ -96,13 +101,13 @@ function IncidentForm({ mode = "create", incident = null }) {
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Select Services
         </label>
-        <div className="grid grid-cols-3 border rounded-md p-2 max-h-32 overflow-y-auto">
+        <div className="grid grid-cols-3 gap-y-2 border rounded-md p-2 max-h-32 overflow-y-auto">
           {services.map((service) => (
-            <label key={service.id} className="flex items-center mb-2">
+            <label key={service.id} className="flex items-center">
               <input
                 type="checkbox"
                 value={service.id}
-                checked={selectedServices.includes(service.id)}
+                checked={incidentData.selectedServices.includes(service.id)}
                 onChange={() => handleServiceSelection(service.id)}
                 className="mr-2"
                 disabled={mode === "update"} // Disable selection in update mode if required
@@ -114,7 +119,7 @@ function IncidentForm({ mode = "create", incident = null }) {
       </div>
 
       {/* Service Status Selection */}
-      {selectedServices.length > 0 && (
+      {incidentData.selectedServices.length > 0 && (
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Set Status for Selected Services
@@ -122,10 +127,16 @@ function IncidentForm({ mode = "create", incident = null }) {
           <div className="flex border rounded-md overflow-hidden">
             {SERVICE_STATUS_LIST.map((option) => (
               <button
+                disabled={mode === "update"}
                 key={option.code}
-                onClick={() => setServiceStatus(option.code)}
+                onClick={() =>
+                  setIncidentData((prev) => ({
+                    ...prev,
+                    serviceStatus: option.code,
+                  }))
+                }
                 className={`flex-1 py-2 text-center border-r ${
-                  serviceStatus === option.code
+                  incidentData.serviceStatus === option.code
                     ? "bg-blue-100 text-blue-600"
                     : "bg-gray-100 text-gray-600"
                 }`}
@@ -143,9 +154,11 @@ function IncidentForm({ mode = "create", incident = null }) {
           Message
         </label>
         <textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Describe the incident details..."
+          value={incidentData.message}
+          onChange={(e) =>
+            setIncidentData((prev) => ({ ...prev, message: e.target.value }))
+          }
+          placeholder="Describe the current status of the incident..."
           className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           rows="4"
         />
