@@ -1,5 +1,5 @@
 import AddOrganisationButton from "./AddOrganizationButton";
-import AllOrganizationView from "./AllOrganiZationView";
+import AllOrganizationView from "./AllOrganizationView";
 import SearchOrganization from "./SearchOrganization";
 
 const LandingPage = () => {
