@@ -15,6 +15,7 @@ export const AxiosProvider = ({ children }) => {
     baseURL: API_BASE_URL,
     headers: {
       "Content-Type": "application/json",
+      "ngrok-skip-browser-warning": "any",
       timeout: 10000,
     },
   });
