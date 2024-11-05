@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import useAxios from "./axios";
 import useOrganizationAPI from "../utils/services/organization";
 
@@ -15,6 +15,7 @@ const AccessControlContext = createContext({
   setOrgInfo: () => {},
   services: [],
   getServiceNames: () => {},
+  userInfoLoaded: false,
 });
 
 export const AccessControlProvider = ({ children }) => {
@@ -31,9 +32,11 @@ export const AccessControlProvider = ({ children }) => {
     displayName: "",
     status: "",
   });
+
+  const [userInfoLoaded, setUserInfoLoaded] = useState(false);
+  const axiosInstance = useAxios();
   // organization service names
   // {id: 1, name: ""}
-  const axiosInstance = useAxios();
   const [services, setServices] = useState([]);
   const { fetchOrganizationServices } = useOrganizationAPI(axiosInstance);
 
@@ -41,6 +44,10 @@ export const AccessControlProvider = ({ children }) => {
     const res = await fetchOrganizationServices(organizationId);
     setServices(res.data.map((s) => ({ name: s.name, id: s.serviceId })));
   };
+
+  useEffect(() => {
+    setUserInfoLoaded(true);
+  }, [userInfo]);
 
   return (
     <AccessControlContext.Provider
@@ -51,6 +58,7 @@ export const AccessControlProvider = ({ children }) => {
         setOrgInfo,
         services,
         getServiceNames,
+        userInfoLoaded,
       }}
     >
       {children}
