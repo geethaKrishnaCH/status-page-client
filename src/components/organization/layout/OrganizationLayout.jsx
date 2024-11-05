@@ -11,8 +11,14 @@ const OrganizationLayout = () => {
   const { organizationId } = useParams();
   const axiosInstance = useAxios();
   const { isAuthenticated } = useAuth0();
-  const { userInfo, orgInfo, setUserInfo, setOrgInfo, getServiceNames } =
-    useAccessContext();
+  const {
+    userInfo,
+    orgInfo,
+    setUserInfo,
+    setOrgInfo,
+    getServiceNames,
+    setUserInfoLoaded,
+  } = useAccessContext();
   const { fetchOrganizationInfo } = useOrganizationAPI(axiosInstance);
   const { fetchUserInfo } = useUsersAPI(axiosInstance);
 
@@ -26,6 +32,7 @@ const OrganizationLayout = () => {
   const getUserInfo = async () => {
     const res = await fetchUserInfo(organizationId);
     setUserInfo(res.data);
+    setUserInfoLoaded(true);
   };
 
   useEffect(() => {

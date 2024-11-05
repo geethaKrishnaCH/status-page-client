@@ -12,19 +12,18 @@ const ProtectedRoute = ({ children }) => {
   const { userInfo, userInfoLoaded } = useAccessContext();
   const navigate = useNavigate();
 
-  const hasAccess =
-    isAuthenticated &&
-    userInfoLoaded &&
-    (allowedRoles?.length === 0 || allowedRoles.includes(userInfo.roles?.[0]));
-
   useEffect(() => {
-    if (!hasAccess) {
+    const hasAccess =
+      isAuthenticated &&
+      (allowedRoles?.length === 0 ||
+        allowedRoles.includes(userInfo.roles?.[0]));
+    if (!hasAccess && userInfoLoaded) {
       navigate("/", { replace: true });
     }
-  }, [hasAccess, navigate]);
+  }, [navigate, userInfoLoaded, isAuthenticated]);
 
   // Render a loading indicator while loading is in progress
-  if (localLoading) {
+  if (!userInfoLoaded) {
     return null;
   }
 

@@ -16,6 +16,7 @@ const AccessControlContext = createContext({
   services: [],
   getServiceNames: () => {},
   userInfoLoaded: false,
+  setUserInfoLoaded: () => {},
 });
 
 export const AccessControlProvider = ({ children }) => {
@@ -45,10 +46,6 @@ export const AccessControlProvider = ({ children }) => {
     setServices(res.data.map((s) => ({ name: s.name, id: s.serviceId })));
   };
 
-  useEffect(() => {
-    setUserInfoLoaded(true);
-  }, [userInfo]);
-
   return (
     <AccessControlContext.Provider
       value={{
@@ -59,6 +56,7 @@ export const AccessControlProvider = ({ children }) => {
         services,
         getServiceNames,
         userInfoLoaded,
+        setUserInfoLoaded,
       }}
     >
       {children}

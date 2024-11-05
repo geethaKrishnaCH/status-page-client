@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BiHome } from "react-icons/bi";
 import { BsActivity } from "react-icons/bs";
 import { FcServices } from "react-icons/fc";
 import { GiTeamIdea } from "react-icons/gi";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [selectedOption, setSelectedOption] = useState("");
 
   // Array of link objects
@@ -16,6 +17,19 @@ const Sidebar = () => {
     { path: "incidents", label: "Incidents", icon: <BsActivity /> },
     { path: "teams", label: "Team members", icon: <GiTeamIdea /> },
   ];
+
+  useEffect(() => {
+    // Extract last part of path, for example "services" from "/services"
+    const currentPath = location.pathname.split("/").pop();
+
+    // Find the matching option based on the current path
+    const selected = links.find((link) => link.path === currentPath);
+
+    // If a match is found, set it as the selected option
+    if (selected) {
+      setSelectedOption(selected.path);
+    }
+  }, [location.pathname, links]);
 
   const handleSidebarSelection = (selectedOption) => {
     setSelectedOption(selectedOption);
